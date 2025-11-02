@@ -7,7 +7,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\Select;
 
@@ -50,7 +50,7 @@ class Event extends Resource
                     ID::make()->sortable(),
         Text::make('Name'),
         Number::make('Duration')->help('Duration in hours'),
-        Date::make('Event Date'),
+        DateTime::make('Event Date'),
         Textarea::make('Description'),
         Text::make('Location'),
         Text::make('Address'),
