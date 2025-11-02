@@ -1,59 +1,172 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Tech Stack
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+- **Backend**: Laravel with PHP
+- **Frontend**: React with Inertia.js
+- **Styling**: TailwindCSS with Headless UI
+- **Admin Panel**: Laravel Nova
+- **Build Tool**: Vite
+- **Authentication**: Laravel Sanctum
+- **Additional**: FullCalendar, date-fns, Ziggy for route helpers
 
-## About Laravel
+## Prerequisites
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Before you begin, ensure you have the following installed:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **PHP 8.2 or higher**
+- **Composer** (latest version)
+- **Node.js 18.x or higher**
+- **npm** or **yarn**
+- **Database** (MySQL, PostgreSQL, or SQLite)
+- **Git**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Quick Setup
 
-## Learning Laravel
+The project includes a convenient setup script that handles most of the installation process:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+# Clone the repository
+git clone <your-repository-url>
+cd <project-directory>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Run the automated setup
+composer run setup
+```
 
-## Laravel Sponsors
+This command will:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Install PHP dependencies
+- Copy `.env.example` to `.env`
+- Generate application key
+- Run database migrations
+- Install Node.js dependencies
+- Build frontend assets
 
-### Premium Partners
+### 1. Install PHP Dependencies
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+composer install
+```
 
-## Contributing
+### 2. Environment Configuration
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# Copy the example environment file
+cp .env.example .env
 
-## Code of Conduct
+# Generate application key
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Database Setup
 
-## Security Vulnerabilities
+Edit your `.env` file with your database credentials:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-## License
+For SQLite (development):
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database/database.sqlite
+```
+
+### 4. Run Migrations
+
+```bash
+php artisan migrate
+```
+
+### 5. Install Node.js Dependencies
+
+```bash
+npm install
+```
+
+### 6. Build Assets
+
+For development:
+
+```bash
+npm run dev
+```
+
+For production:
+
+```bash
+npm run build
+```
+
+## Laravel Nova Setup
+
+This project includes Laravel Nova for admin functionality. To set up Nova:
+
+### 1. Nova License
+
+Ensure you have a valid Laravel Nova license and access to the Nova repository. The composer.json already includes the Nova repository configuration.
+
+### 2. Nova Installation
+
+Nova should be installed automatically with `composer install`. If you encounter issues:
+
+```bash
+composer update laravel/nova
+```
+
+### 3. Nova Assets
+
+Publish Nova's assets:
+
+```bash
+php artisan nova:install
+```
+
+### 4. Create Nova User
+
+Create an admin user for Nova:
+
+```bash
+php artisan db:seed
+
+```
+
+## Development
+
+### Running the Development Environment
+
+The project includes a comprehensive development script that runs multiple services concurrently:
+
+```bash
+composer run dev
+```
+
+This command starts:
+
+- **Laravel development server** (http://localhost:8000)
+- **Queue worker** for background jobs
+- **Laravel Pail** for real-time log monitoring
+- **Vite development server** for hot module replacement
+
+### Individual Services
+
+You can also run services individually:
+
+```bash
+# Laravel server
+php artisan serve
+
+# Queue worker
+php artisan queue:listen
+
+# Log monitoring
+php artisan pail
+
+# Frontend development
+npm run dev
+```
