@@ -4,11 +4,11 @@ import { Head, Link, router } from "@inertiajs/react";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 
-export default function MyEvents({ events, flash, timezone = "UTC" }) {
+export default function MyEvents({ events, flash }) {
     const [deletingId, setDeletingId] = useState(null);
 
     const userTimezone =
-        timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+        Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
 
     const formatEventDate = (dateString) => {
         try {
@@ -92,7 +92,7 @@ export default function MyEvents({ events, flash, timezone = "UTC" }) {
                     </div>
                 )}
 
-                {events.length === 0 ? (
+                {events.data.length === 0 ? (
                     <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
                         <div className="mx-auto h-12 w-12 text-gray-400">
                             <svg
@@ -123,7 +123,7 @@ export default function MyEvents({ events, flash, timezone = "UTC" }) {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {events.map((event) => (
+                        {events.data.map((event) => (
                             <div
                                 key={event.id}
                                 className="rounded-lg border border-gray-200 bg-white p-6"
@@ -247,6 +247,27 @@ export default function MyEvents({ events, flash, timezone = "UTC" }) {
                                 </div>
                             </div>
                         ))}
+                        {events.links.length > 1 && (
+                            <div className="mt-6 flex justify-center gap-2">
+                                {events.links.map((link, index) => (
+                                    <button
+                                        key={index}
+                                        disabled={!link.url}
+                                        onClick={() =>
+                                            link.url && router.visit(link.url)
+                                        }
+                                        className={`rounded px-3 py-1 text-sm ${
+                                            link.active
+                                                ? "bg-gray-900 text-white"
+                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                        } ${!link.url ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        dangerouslySetInnerHTML={{
+                                            __html: link.label,
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

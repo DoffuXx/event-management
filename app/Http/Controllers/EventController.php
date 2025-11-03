@@ -92,7 +92,13 @@ class EventController extends Controller
         try {
         $userId = $request->user()->id;
 
-        $events = Event::where('user_id', $userId)->orderBy('event_date', 'asc')->get();
+
+        $events = Event::where('user_id', $userId)
+            ->orderBy('event_date', 'asc')
+            ->paginate(5)
+            ->withQueryString();
+
+
 
         return Inertia::render('Events/MyEvents', [
             'events' => $events,
