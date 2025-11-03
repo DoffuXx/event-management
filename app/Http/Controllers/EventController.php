@@ -89,7 +89,6 @@ class EventController extends Controller
 
     public function myeventsListing(Request $request)
     {
-        \Log::info('Loading my events for user ID: ' . $request->user()->id);
         try {
         $userId = $request->user()->id;
 
