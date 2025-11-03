@@ -32,7 +32,9 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </NavLink>
                                 <NavLink
                                     href={route("myeventsListing")}
-                                    active={route().current("myeventsListing")}
+                                    active={window.location.pathname.startsWith(
+                                        "/dashboard/myevents",
+                                    )}
                                 >
                                     My Events
                                 </NavLink>
