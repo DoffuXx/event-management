@@ -20,9 +20,7 @@ class EventController extends Controller
 
             // Cache user registrations (user-specific)
             $userId = $request->user()->id;
-            $registeredEventIds = Cache::remember("user_registrations_{$userId}", 300, function () use ($userId) {
-                return EventRegistration::where('user_id', $userId)->pluck('event_id')->toArray();
-            });
+            $registeredEventIds = EventRegistration::where('user_id', $userId)->where('status', '!=', 'cancelled')->pluck('event_id')->toArray();
 
             // Add registration status to events
             $events = $events->map(function ($event) use ($registeredEventIds) {
