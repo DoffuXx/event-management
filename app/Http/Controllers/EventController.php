@@ -87,8 +87,10 @@ class EventController extends Controller
         ]);
     }
 
-    public function myeventsLisitng(Request $request)
+    public function myeventsListing(Request $request)
     {
+        \Log::info('Loading my events for user ID: ' . $request->user()->id);
+        try {
         $userId = $request->user()->id;
 
         $events = Event::where('user_id', $userId)->orderBy('event_date', 'asc')->get();
@@ -96,6 +98,11 @@ class EventController extends Controller
         return Inertia::render('Events/MyEvents', [
             'events' => $events,
         ]);
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('dashboard')
+                ->with('error', 'Failed to load your events: ' . $e->getMessage());
+        }
     }
 
     public function myeventsShow($id)
@@ -120,7 +127,7 @@ class EventController extends Controller
             $event = Event::where('id', $id)->where('user_id', $userId)->firstOrFail();
 
             if (!$event) {
-                return redirect()->route('events.myevents')->with('error', 'Event not found or you do not have permission to edit this event.');
+                return redirect()->route('myeventsListing')->with('error', 'Event not found or you do not have permission to edit this event.');
             }
 
             return Inertia::render('Events/Edit', [
@@ -128,7 +135,7 @@ class EventController extends Controller
             ]);
         } catch (\Exception $e) {
             return redirect()
-                ->route('events.myevents')
+                ->route('myeventsListing')
                 ->with('error', 'Failed to load event for editing: ' . $e->getMessage());
         }
     }
@@ -170,10 +177,10 @@ class EventController extends Controller
 
             Event::create(array_merge($validatedData, ['user_id' => $request->user()->id]));
 
-            return redirect()->route('events.myevents')->with('success', 'Event created successfully.');
+            return redirect()->route('myeventsListing')->with('success', 'Event created successfully.');
         } catch (\Exception $e) {
             return redirect()
-                ->route('events.create')
+                ->route('myeventsCreate')
                 ->with('error', 'Failed to create event: ' . $e->getMessage());
         }
     }
@@ -201,10 +208,10 @@ class EventController extends Controller
                 ->where('user_id', $request->user()->id)
                 ->update($validatedData);
 
-            return redirect()->route('events.myevents')->with('success', 'Event updated successfully.');
+            return redirect()->route('myeventsListing')->with('success', 'Event updated successfully.');
         } catch (\Exception $e) {
             return redirect()
-                ->route('events.edit', ['id' => $id])
+                ->route('myeventsEdit', ['id' => $id])
                 ->with('error', 'Failed to update event: ' . $e->getMessage());
         }
     }

@@ -20,27 +20,45 @@ Route::get('/dashboard', [EventController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::prefix('events')->name('events.')->group(function () {
-        // View single event
-Route::get('/{eventId}', [EventController::class, 'show'])->name('show');
-        // Join event (register)
-                Route::post('/{eventId}/join', [EventRegistrationController::class, 'store'])
-            ->middleware('check.event.capacity')
-            ->name('join');
+    Route::prefix('events')
+        ->name('events.')
+        ->group(function () {
+            // View single event
+            Route::get('/{eventId}', [EventController::class, 'show'])->name('show');
+            // Join event (register)
+            Route::post('/{eventId}/join', [EventRegistrationController::class, 'store'])
+                ->middleware('check.event.capacity')
+                ->name('join');
 
-                Route::post('/{eventId}/cancel', [EventRegistrationController::class, 'destroy'])
-            ->name('cancel');
+            Route::post('/{eventId}/cancel', [EventRegistrationController::class, 'destroy'])->name('cancel');
+        });
+
+
+    Route::prefix('dashboard')->group(function () {
+
+        Route::get('/myevents', [EventController::class, 'myeventsListing'])->name('myeventsListing');
+      Route::get('/myevents/create', [EventController::class, 'create'])->name('myeventsCreate');
+    Route::get('/myevents/{eventId}', [EventController::class, 'myeventsShow'])->name('myeventsShow');
+
+    Route::get('/myevents/create', [EventController::class, 'create'])->name('myeventsCreate');
+
+    Route::post('/myevents/store', [EventController::class, 'store'])->name('myeventsStore');
+
+    Route::get('/myevents/{eventId}/edit', [EventController::class, 'edit'])->name('myeventsEdit');
+
+    Route::post('/myevents/{eventId}/update', [EventController::class, 'update'])->name('myeventsUpdate');
+
+    Route::post('/myevents/{eventId}/delete', [EventController::class, 'destroy'])->name('myeventsDestroy');
+
+    Route::post('/myevents/{eventId}/store', [EventController::class, 'store'])->name('myeventsStore');
 
 
     });
-
 });
 
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
