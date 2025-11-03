@@ -27,6 +27,12 @@ class EventRegistrationController extends Controller
             $event = \App\Models\Event::findOrFail($eventId);
             $userId = $request->user()->id;
 
+            // check if user is event creator
+            if ($event->user_id === $userId) {
+                return redirect()->route('events.show', $eventId)
+                    ->with('error', 'You cannot register for your own event.');
+            }
+
                // Check if event is published
             if ($event->status !== 'published') {
                 return redirect()->route('events.show', $eventId)
