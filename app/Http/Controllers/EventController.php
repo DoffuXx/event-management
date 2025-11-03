@@ -86,4 +86,126 @@ class EventController extends Controller
             ],
         ]);
     }
+
+    public function myeventsLisitng(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $events = Event::where('user_id', $userId)->orderBy('event_date', 'asc')->get();
+
+        return Inertia::render('Events/MyEvents', [
+            'events' => $events,
+        ]);
+    }
+
+    public function myeventsShow($id)
+    {
+        $event = Event::findOrFail($id);
+
+        return Inertia::render('Events/MyEventDetail', [
+            'event' => $event,
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Events/Create');
+    }
+
+    public function edit($id)
+    {
+        try {
+            $userId = auth()->id();
+
+            $event = Event::where('id', $id)->where('user_id', $userId)->firstOrFail();
+
+            if (!$event) {
+                return redirect()->route('events.myevents')->with('error', 'Event not found or you do not have permission to edit this event.');
+            }
+
+            return Inertia::render('Events/Edit', [
+                'event' => $event,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('events.myevents')
+                ->with('error', 'Failed to load event for editing: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $userId = auth()->id();
+            $event = Event::where('id', $id)->where('user_id', $userId)->firstOrFail();
+
+            $event->delete();
+
+            return redirect()->route('events.myevents')->with('success', 'Event deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('events.myevents')
+                ->with('error', 'Failed to delete event: ' . $e->getMessage());
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'event_date' => 'required|date',
+                'duration' => 'required|integer|min:1',
+                'description' => 'nullable|string',
+                'location' => 'required|string|max:255',
+                'address' => 'nullable|string|max:255',
+                'city' => 'nullable|string|max:100',
+                'state' => 'nullable|string|max:100',
+                'country' => 'nullable|string|max:100',
+                'postal_code' => 'nullable|string|max:20',
+                'capacity' => 'required|integer|min:1',
+                'whitelist_capacity' => 'required|integer|min:0',
+                'status' => 'required|in:published,draft',
+            ]);
+
+            Event::create(array_merge($validatedData, ['user_id' => $request->user()->id]));
+
+            return redirect()->route('events.myevents')->with('success', 'Event created successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('events.create')
+                ->with('error', 'Failed to create event: ' . $e->getMessage());
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'event_date' => 'required|date',
+                'duration' => 'required|integer|min:1',
+                'description' => 'nullable|string',
+                'location' => 'required|string|max:255',
+                'address' => 'nullable|string|max:255',
+                'city' => 'nullable|string|max:100',
+                'state' => 'nullable|string|max:100',
+                'country' => 'nullable|string|max:100',
+                'postal_code' => 'nullable|string|max:20',
+                'capacity' => 'required|integer|min:1',
+                'whitelist_capacity' => 'required|integer|min:0',
+                'status' => 'required|in:published,draft',
+            ]);
+
+            Event::where('id', $id)
+                ->where('user_id', $request->user()->id)
+                ->update($validatedData);
+
+            return redirect()->route('events.myevents')->with('success', 'Event updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('events.edit', ['id' => $id])
+                ->with('error', 'Failed to update event: ' . $e->getMessage());
+        }
+    }
 }
