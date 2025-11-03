@@ -19,6 +19,7 @@ class Event extends Model
         'capacity',
         'whitelist_capacity',
         'status',
+        'user_id'
     ];
 
     protected $casts = [
