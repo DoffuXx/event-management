@@ -151,12 +151,16 @@ class EventController extends Controller
             $userId = auth()->id();
             $event = Event::where('id', $id)->where('user_id', $userId)->firstOrFail();
 
+            if (!$event) {
+                return redirect()->route('myeventsListing')->with('error', 'Event not found or you do not have permission to delete this event.');
+            }
+
             $event->delete();
 
-            return redirect()->route('events.myevents')->with('success', 'Event deleted successfully.');
+            return redirect()->route('myeventsListing')->with('success', 'Event deleted successfully.');
         } catch (\Exception $e) {
             return redirect()
-                ->route('events.myevents')
+                ->route('myeventsListing')
                 ->with('error', 'Failed to delete event: ' . $e->getMessage());
         }
     }
