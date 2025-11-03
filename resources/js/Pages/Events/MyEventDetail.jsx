@@ -83,6 +83,15 @@ export default function MyEventDetail({
                         My Event Details
                     </h2>
                     <div className="flex gap-2">
+                        {event.status === "published" && (
+                            <Link
+                                href={route("events.show", event.id)}
+                                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
+                            >
+                                Public Event Link
+                            </Link>
+                        )}
+
                         <Link
                             href={route("myeventsEdit", event.id)}
                             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
